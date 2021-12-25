@@ -1,0 +1,35 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend del proyecto Taller Car.R",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlbertoMerkdoP/Taller-Car.R.git"
+  },
+  "author": "Alberto Luis Mercado Piñeres",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlbertoMerkdoP/Taller-Car.R/issues"
+  },
+  "homepage": "https://github.com/AlbertoMerkdoP/Taller-Car.R#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.1.3",
+    "socket.io": "^4.4.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.16.0",
+    "@babel/core": "^7.16.5",
+    "@babel/preset-env": "^7.16.5",
+    "nodemon": "^2.0.15"
+  }
+}
