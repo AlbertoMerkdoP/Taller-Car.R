@@ -1,7 +1,9 @@
 const usuariosCtrl = {};
+const jwt = require('jsonwebtoken');
 const usuarios = require('../models/user.model');
 const { encrypt, compare } = require('../db/encryptPassword');
 const userSchema = require('../models/user.model');
+require('dotenv').config()
 
 usuariosCtrl.getUsers = async (req, res) => {
     try {
@@ -14,7 +16,7 @@ usuariosCtrl.getUsers = async (req, res) => {
 
 usuariosCtrl.createUser = async (req, res) => {
     try {
-        const { nombre, telefono, tipo_documento,documento,fecha_nacimiento, rol, estado, usuario, pwd } = req.body
+        const { nombre, telefono, tipo_documento, documento, fecha_nacimiento, rol, estado, usuario, pwd } = req.body
         const passwordHash = await encrypt(pwd)
         const registerUser = await userSchema.create({
             nombre,
@@ -38,6 +40,32 @@ usuariosCtrl.createUser = async (req, res) => {
     }
 };
 
+usuariosCtrl.signUp = async (req, res) => {
+    try {
+        const { nombre, telefono, tipo_documento, documento, fecha_nacimiento, usuario, pwd } = req.body
+        const passwordHash = await encrypt(pwd)
+        const registerUser = await userSchema.create({
+            nombre,
+            telefono,
+            tipo_documento,
+            documento,
+            fecha_nacimiento,
+            rol: "Externo",
+            estado: "Activo",
+            usuario,
+            pwd: passwordHash
+        })
+        res.json("¡Usuario creado con exito!");
+
+    } catch (error) {
+        if (error.code === 11000) {
+            res.json("Ya existe un usuario con este correo electronico y/o numero de documento")
+        } else {
+            res.json({ error });
+        }
+    }
+}
+
 usuariosCtrl.getUser = async (req, res) => {
     try {
         const user = await usuarios.findById(req.params.id);
@@ -58,7 +86,7 @@ usuariosCtrl.deleteUser = async (req, res) => {
 
 usuariosCtrl.updateUser = async (req, res) => {
     try {
-        const { nombre, telefono, tipo_documento,documento,fecha_nacimiento, rol, estado } = req.body;
+        const { nombre, telefono, tipo_documento, documento, fecha_nacimiento, rol, estado } = req.body;
         const updateUser = await userSchema.findByIdAndUpdate(req.params.id, {
             nombre,
             telefono,
@@ -89,7 +117,11 @@ usuariosCtrl.loginUser = async (req, res) => {
         const checkPassword = await compare(pwd, user.pwd)
 
         if (checkPassword) {
-            res.json([user])
+            const token = jwt.sign({ id: user._id }, process.env.SECRET, {
+                expiresIn: "24h",
+            });
+            const auth = { "auth": true, "token": token }
+            res.json([user, auth])
             return
         }
 
