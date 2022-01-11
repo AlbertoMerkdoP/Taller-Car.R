@@ -15,7 +15,7 @@ const verifyToken = async (req, res, next) => {
     // Decodifica el token
     const decoded = await jwt.verify(token, process.env.SECRET, function (err, decoded) {
         if (err) {
-            return res.status(401).json({ "error": true, "message": 'Acceso no autorizado' });
+            return res.status(401).json({ "auth": false, "error": true, "message": 'Acceso no autorizado' });
         } else {
             // Guarda el token en un objeto para las rutas
             req.userId = decoded.id;
